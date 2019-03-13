@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.snowalker.shardingjdbc.snowalker.demo.mapper.OrderMapper">
+
+	<select id="queryOrderInfoList" parameterType="com.snowalker.shardingjdbc.snowalker.demo.entity.OrderInfo"
+			resultType="com.snowalker.shardingjdbc.snowalker.demo.entity.OrderInfo">
+        select
+            t.id as id,
+            t.user_id as userId,
+            t.order_id as orderId,
+            t.user_name as userName
+        from t_order t
+        where t.user_id=#{userId}
+	</select>
+
+    <select id="queryOrderInfoByOrderId" parameterType="com.snowalker.shardingjdbc.snowalker.demo.entity.OrderInfo"
+            resultType="com.snowalker.shardingjdbc.snowalker.demo.entity.OrderInfo">
+        select
+            t.id as id,
+            t.user_id as userId,
+            t.order_id as orderId,
+            t.user_name as userName
+        from t_order t
+        where t.order_id=#{orderId}
+        and t.user_id=#{userId}
+	</select>
+
+    <!--订单入库-->
+    <insert id="addOrder"
+            parameterType="com.snowalker.shardingjdbc.snowalker.demo.entity.OrderInfo">
+	  insert into t_order(
+          user_id,
+          order_id,
+          user_name
+	  )
+	  values
+	  (
+          #{userId},
+          #{orderId},
+          #{userName}
+	  )
+	</insert>
+</mapper>
