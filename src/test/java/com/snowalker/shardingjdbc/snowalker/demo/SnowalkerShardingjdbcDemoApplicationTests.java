@@ -1,11 +1,14 @@
 package com.snowalker.shardingjdbc.snowalker.demo;
 
+import com.snowalker.shardingjdbc.snowalker.demo.complex.sharding.constant.DbAndTableEnum;
+import com.snowalker.shardingjdbc.snowalker.demo.complex.sharding.sequence.KeyGenerator;
 import com.snowalker.shardingjdbc.snowalker.demo.entity.OrderInfo;
 import com.snowalker.shardingjdbc.snowalker.demo.service.OrderService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -68,4 +71,20 @@ public class SnowalkerShardingjdbcDemoApplicationTests {
         }
     }
 
+    @Autowired
+    KeyGenerator keyGenerator;
+
+    /**
+     * 测试分布式主键生成
+     */
+    @Test
+    public void testGenerateId() {
+        // 支付宝或者微信uid
+        String outId = "1232132131241241243123";
+        LOGGER.info("获取id开始");
+        String innerUserId = keyGenerator.generateKey(DbAndTableEnum.T_USER, outId);
+        LOGGER.info("外部id={},innerUserId={}", outId, innerUserId);
+        String orderId = keyGenerator.generateKey(DbAndTableEnum.T_NEW_ORDER, innerUserId);
+        LOGGER.info("外部id={},innerUserId={},orderId={}", outId, innerUserId, orderId);
+    }
 }
