@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -28,10 +27,9 @@ public class SnoWalkerComplexShardingDB implements ComplexKeysShardingAlgorithm 
     private static final Logger log = LoggerFactory.getLogger(SnoWalkerComplexShardingDB.class);
 
     /**
-     * @param availableTargetNames 有效的数据源集合
+     * @param availableTargetNames 可用数据源集合
      * @param shardingValues   分片键
      * @return sharding results for data sources or tables's names
-     * TODO
      */
     @Override
     public Collection<String> doSharding(Collection<String> availableTargetNames, Collection<ShardingValue> shardingValues) {
@@ -45,13 +43,14 @@ public class SnoWalkerComplexShardingDB implements ComplexKeysShardingAlgorithm 
         for (ShardingValue var : shardingValues) {
 
             ListShardingValue<String> listShardingValue = (ListShardingValue<String>)var;
-
             List<String> shardingValue = (List<String>)listShardingValue.getValues();
+
+            log.info("shardingValue:" + JSON.toJSONString(shardingValue));
 
             //根据列名获取索引规则，得到索引值
             String index = getIndex(listShardingValue.getLogicTableName(),
-                    listShardingValue.getColumnName(),
-                    shardingValue.get(0));
+                                    listShardingValue.getColumnName(),
+                                    shardingValue.get(0));
 
             //循环匹配数据源
             for (String name : availableTargetNames) {
@@ -79,14 +78,17 @@ public class SnoWalkerComplexShardingDB implements ComplexKeysShardingAlgorithm 
      * @param shardingValue
      * @return
      */
-    public String getIndex(String logicTableName,String columnName,String shardingValue) {
+    public String getIndex(String logicTableName, String columnName, String shardingValue) {
         String index = "";
         if (StringUtils.isBlank(shardingValue)) {
             throw new IllegalArgumentException("分片键值为空");
         }
         //截取分片键值-下标循环主键规则枚举类，匹配主键列名得到规则
         for (DbAndTableEnum targetEnum : DbAndTableEnum.values()) {
-            //目标表路由
+
+            /**目标表路由
+             * 如果逻辑表命中，判断路由键是否与列名相同
+             */
             if (targetEnum.getTableName().equals(logicTableName)) {
                 //目标表的目标主键路由-例如：根据订单id查询订单信息
                 if (targetEnum.getShardingKey().equals(columnName)) {
@@ -122,25 +124,10 @@ public class SnoWalkerComplexShardingDB implements ComplexKeysShardingAlgorithm 
      * @param shardingValue
      * @return
      */
-    public String getDbIndexBySubString(DbAndTableEnum targetEnum,String shardingValue) {
+    public String getDbIndexBySubString(DbAndTableEnum targetEnum, String shardingValue) {
         int indexBegin = targetEnum.getDbIndexBegin();
         int indexEnd = targetEnum.getDbIndexBegin() + ShardingConstant.DB_SUFFIX_LENGTH;
         return StringUtil.deleteZero(shardingValue.substring(indexBegin, indexEnd));
     }
 
-    private Collection<Long> getShardingValue(Collection<ShardingValue> shardingValues, final String key) {
-        Collection<Long> valueSet = new ArrayList<>();
-        Iterator<ShardingValue> iterator = shardingValues.iterator();
-        while (iterator.hasNext()) {
-            ShardingValue next = iterator.next();
-            if (next instanceof ListShardingValue) {
-                ListShardingValue value = (ListShardingValue) next;
-                /**例如：根据user_id + order_id 双分片键来进行分表*/
-                if (value.getColumnName().equals(key)) {
-                    return value.getValues();
-                }
-            }
-        }
-        return valueSet;
-    }
 }

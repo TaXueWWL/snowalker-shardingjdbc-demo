@@ -1,15 +1,10 @@
 package com.snowalker.shardingjdbc.snowalker.demo.complex.sharding.util;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
 
 /**
  * @author snowalker
@@ -24,7 +19,7 @@ public class DateUtil {
      * 线程安全方式
      */
     private static final ThreadLocal<DateFormat> DATE_FORMAT_THREAD_LOCAL
-            = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMddHHmmssSSS"));
+            = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyMMddHHmmssSSS"));
 
     private static final ThreadLocal<DateFormat> DATE_FORMATY_YYYMMDD
             = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMdd"));
@@ -204,29 +199,6 @@ public class DateUtil {
         return calendar.get(Calendar.MONTH) + 1;
     }
 
-
-    private Long getIdFromHostIp(){
-        try {
-            String hostAddress = Inet4Address.getLocalHost().getHostAddress();
-            System.out.println("ip=" + hostAddress);
-            int[] ints = StringUtils.toCodePoints(hostAddress);
-            System.out.println("ints长度=" + ints.length);
-            int sums = 0;
-            for(int b : ints){
-                sums += b;
-                System.out.println("当前循环的sum=" + sums);
-            }
-            return (long)(sums % 32);
-        } catch (UnknownHostException e) {
-            // 如果获取失败，则使用随机数备用
-            return (long)(new Random().nextInt(100));
-        }
-    }
-
-    public static void main(String[] args) {
-        long id = new DateUtil().getIdFromHostIp();
-        System.out.println(id);
-    }
 }
 
 

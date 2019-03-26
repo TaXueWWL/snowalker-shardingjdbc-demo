@@ -6,7 +6,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan(basePackages = "com.snowalker.shardingjdbc.snowalker.demo.mapper")
+@MapperScan(basePackages = {"com.snowalker.shardingjdbc.snowalker.demo.mapper",
+    "com.snowalker.shardingjdbc.snowalker.demo.complex.sharding.mapper"}
+)
 @EnableEncryptableProperties
 public class SnowalkerShardingjdbcDemoApplication {
 

@@ -73,6 +73,7 @@ public class KeyGenerator {
      * 根据已知路由id取出库表索引，外部id和内部id均 进行ASCII转换后再对库表数量取模
      * @param targetEnum 待生成主键的目标表规则配置
      * @param relatedRouteId 路由id
+     *                       取模求表 取商求库
      * @return
      */
     private Map<String, String> getDbIndexAndTbIndexMap(DbAndTableEnum targetEnum,String relatedRouteId) {

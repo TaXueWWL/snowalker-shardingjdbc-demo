@@ -1,5 +1,10 @@
 package com.snowalker.shardingjdbc.snowalker.demo.complex.sharding.mapper;
 
+import com.snowalker.shardingjdbc.snowalker.demo.complex.sharding.entity.OrderNewInfoEntity;
+import com.snowalker.shardingjdbc.snowalker.demo.entity.OrderInfo;
+
+import java.util.List;
+
 /**
  * @author snowalker
  * @version 1.0
@@ -8,4 +13,10 @@ package com.snowalker.shardingjdbc.snowalker.demo.complex.sharding.mapper;
  * @desc 订单 new Mapper
  */
 public interface OrderNewMapper {
+
+    List<OrderNewInfoEntity> queryOrderInfoList(OrderNewInfoEntity orderInfo);
+
+    OrderNewInfoEntity queryOrderInfoByOrderId(OrderNewInfoEntity orderInfo);
+
+    int addOrder(OrderNewInfoEntity orderInfo);
 }
