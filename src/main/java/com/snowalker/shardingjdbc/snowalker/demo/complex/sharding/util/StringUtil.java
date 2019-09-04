@@ -92,9 +92,6 @@ public class StringUtil {
     }
 
     /**
-     * 对所有的表数量取模，使数据均匀落在每个表上。
-     * 取模结果对库的总数取商，得出库索引。
-     * 取模结果对单库中表的总数取余，得出表索引。
      * @param obj
      * @param dbCount
      * @param tbCount
@@ -103,14 +100,11 @@ public class StringUtil {
     public static long getDbIndexByMod(Object obj,int dbCount,int tbCount) {
         long tbRange = getModValue(obj, tbCount);
         BigDecimal bc = new BigDecimal(tbRange);
-        BigDecimal[] results = bc.divideAndRemainder(new BigDecimal(dbCount));
+        BigDecimal[] results = bc.divideAndRemainder(new BigDecimal(dbCount/tbCount));
         return (long)results[0].intValue();
     }
 
     /**
-     * 对所有的表数量取模，使数据均匀落在每个表上。
-     * 取模结果对库的总数取商，得出库索引。
-     * 取模结果对单库中表的总数取余，得出表索引。
      *
      * @param obj
      * @param dbCount
@@ -120,7 +114,7 @@ public class StringUtil {
     public static long getTbIndexByMod(Object obj,int dbCount,int tbCount) {
         long tbRange = getModValue(obj, tbCount);
         BigDecimal bc = new BigDecimal(tbRange);
-        BigDecimal[] results = bc.divideAndRemainder(new BigDecimal(tbCount / dbCount));
+        BigDecimal[] results = bc.divideAndRemainder(new BigDecimal(tbCount/dbCount));
         return (long)results[1].intValue();
     }
 }
